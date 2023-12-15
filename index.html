@@ -50,9 +50,9 @@
   });
 
   const source = new EventSource("/visit");
-  const Dlast = document.getElementById("last");
-  const Dnext = document.getElementById("next");
-  const Dbandera = document.getElementById("bandera");
+  const $last = document.getElementById("last");
+  const $next = document.getElementById("next");
+  const $bandera = document.getElementById("bandera");
 
   let ready = true;
 
@@ -62,27 +62,27 @@
     const { city, country, flag, bandera } = JSON.parse(event.data);
     const message = `Última visita: ${city},${country},${flag}`;
 
-    const isLastEmpty = Dlast.innerHTML === "";
+    const isLastEmpty = $last.innerHTML === "";
 
     if (isLastEmpty) {
-      Dlast.innerHTML = message;
-      Dbandera.src = bandera;
+      $last.innerHTML = message;
+      $bandera.src = bandera;
       return;
     }
 
-    Dnext.innerHTML = message;
-    Dbandera.src = bandera;
+    $next.innerHTML = message;
+    $bandera.src = bandera;
 
-    Dnext.style.animation = "fadeInUp 1s ease-in-out- forwards";
-    Dlast.style.animation = "fadeOutUp 1s ease-in-out- forwards";
+    $next.style.animation = "fadeInUp 1s ease-in-out forwards";
+    $last.style.animation = "fadeOutUp 1s ease-in-out forwards";
     ready = false;
 
-    Dnext.onanimationend = () => {
-      Dnext.style.animation = "";
-      Dlast.style.animation = "";
+    $next.onanimationend = () => {
+      $next.style.animation = "";
+      $last.style.animation = "";
 
-      Dlast.innerHTML = message;
-      Dnext.innerHTML = "";
+      $last.innerHTML = message;
+      $next.innerHTML = "";
       ready = true;
     };
     window.addEventListener("unload", (event) => {
