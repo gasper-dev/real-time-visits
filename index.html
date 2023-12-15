@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Real Time Visits</title>
+  </head>
+  <body>
+    <h1 class="page-hero_title__bk_gd">
+      <span> </span>
+    </h1>
+
+    <div class="card">
+      <div class="img">
+        <img id="bandera" />
+      </div>
+
+      <div class="text">
+        <p class="p" id="last"></p>
+        <p class="p" id="next"></p>
+      </div>
+    </div>
+  </body>
+</html>
+
+<script type="module">
+  const res = await fetch("https://geolocation.microlink.io/");
+  const json = await res.json();
+
+  const pais = await fetch(
+    `https://restcountries.com/v3.1/name/${json.country.name}`
+  );
+  const [bandera] = await pais.json();
+  console.log(bandera);
+  const svg = bandera.flags.svg;
+  const {
+    city: { name: city },
+    country: { name: country, flag },
+  } = json;
+
+  await fetch("/visit", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      city,
+      country,
+      flag,
+      bandera: svg,
+    }),
+  });
+
+  const source = new EventSource("/visit");
+  const Dlast = document.getElementById("last");
+  const Dnext = document.getElementById("next");
+  const Dbandera = document.getElementById("bandera");
+
+  let ready = true;
+
+  source.addEventListener("update", (event) => {
+    if (ready === false) return;
+
+    const { city, country, flag, bandera } = JSON.parse(event.data);
+    const message = `Última visita: ${city},${country},${flag}`;
+
+    const isLastEmpty = Dlast.innerHTML === "";
+
+    if (isLastEmpty) {
+      Dlast.innerHTML = message;
+      Dbandera.src = bandera;
+      return;
+    }
+
+    Dnext.innerHTML = message;
+    Dbandera.src = bandera;
+
+    Dnext.style.animation = "fadeInUp 1s ease-in-out- forwards";
+    Dlast.style.animation = "fadeOutUp 1s ease-in-out- forwards";
+    ready = false;
+
+    Dnext.onanimationend = () => {
+      Dnext.style.animation = "";
+      Dlast.style.animation = "";
+
+      Dlast.innerHTML = message;
+      Dnext.innerHTML = "";
+      ready = true;
+    };
+    window.addEventListener("unload", (event) => {
+      source.close();
+    });
+  });
+</script>
+<style>
+  body {
+    position: relative;
+    font-size: 100%;
+    min-height: 100%;
+    max-width: 100vw;
+    margin: 0;
+  }
+
+  .card {
+    margin: auto;
+    width: 252px;
+    height: 265px;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 2px 5px 7px #bebebe, -15px -15px 30px #ffffff;
+    transition: 0.2s ease-in-out;
+    overflow: hidden;
+  }
+
+  .img {
+    width: 100%;
+    height: 50%;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    display: flex;
+    align-items: top;
+    justify-content: right;
+  }
+
+  .text {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: space-around;
+  }
+
+  .text .p {
+    font-family: "Lucida Sans" sans-serif;
+    color: #999999;
+    font-size: 14px;
+  }
+</style>
