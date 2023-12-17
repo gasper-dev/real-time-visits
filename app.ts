@@ -1,4 +1,5 @@
 import { Hono } from "https://deno.land/x/hono@v3.11.7/mod.ts";
+
 import {
   cors,
   serveStatic,
@@ -19,8 +20,8 @@ interface LastVist {
 
 app.use(cors());
 
+app.use("/static/*", serveStatic({ root: "./" }));
 app.get("/", serveStatic({ path: "./index.html" }));
-
 app.post("/visit", async (c) => {
   const { city, flag, country, bandera } = await c.req.json<LastVist>();
 

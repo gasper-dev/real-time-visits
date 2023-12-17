@@ -7,12 +7,10 @@
     <h1 class="page-hero_title__bk_gd">
       <span> </span>
     </h1>
-
+    <div class="img">
+      <img id="bandera" />
+    </div>
     <div class="card">
-      <div class="img">
-        <img id="bandera" />
-      </div>
-
       <div class="text">
         <p class="p" id="last"></p>
         <p class="p" id="next"></p>
@@ -29,7 +27,7 @@
     `https://restcountries.com/v3.1/name/${json.country.name}`
   );
   const [bandera] = await pais.json();
-  console.log(bandera);
+
   const svg = bandera.flags.svg;
   const {
     city: { name: city },
@@ -92,45 +90,30 @@
 </script>
 <style>
   body {
-    position: relative;
-    font-size: 100%;
-    min-height: 100%;
-    max-width: 100vw;
-    margin: 0;
-  }
-
-  .card {
-    margin: auto;
-    width: 252px;
-    height: 265px;
-    background: white;
-    border-radius: 30px;
-    box-shadow: 2px 5px 7px #bebebe, -15px -15px 30px #ffffff;
-    transition: 0.2s ease-in-out;
-    overflow: hidden;
-  }
-
-  .img {
-    width: 100%;
-    height: 50%;
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
-    display: flex;
-    align-items: top;
-    justify-content: right;
-  }
-
-  .text {
-    margin: 20px;
     display: flex;
     flex-direction: column;
-    align-items: space-around;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url("/static/space.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .text .p {
-    font-family: "Lucida Sans" sans-serif;
-    color: #999999;
-    font-size: 14px;
+  .img img {
+    width: 150px;
+    height: 150px;
+  }
+
+  .text p {
+    font-size: 4rem;
+    color: rgb(65, 65, 82);
   }
   @keyframes fadeOutUp {
     from {
@@ -152,7 +135,7 @@
 
     to {
       opacity: 1;
-      transform: translateY(-50px);
+      transform: translateY(-60px);
     }
   }
 </style>
